@@ -8,7 +8,7 @@
   <p id="api-data">Loading data from backend...</p>
 
   <script>
-    fetch('http:10.0.2.44:5000/api/data')
+    fetch('http:10.0.2.79:5000/api/data')
       .then(res => res.json())
       .then(data => {
         document.getElementById("api-data").innerText = data.message;
