@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frontend</title>
+</head>
+<body>
+  <h1>Welcome!</h1>
+  <p id="api-data">Loading data from backend...</p>
+
+  <script>
+    fetch('http:10.0.2.44:5000/api/data')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("api-data").innerText = data.message;
+      })
+      .catch(err => {
+        document.getElementById("api-data").innerText = "Error fetching data.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
