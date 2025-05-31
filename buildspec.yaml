@@ -4,12 +4,16 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR Public...
+      - aws --version
+      - docker --version
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+
   build:
     commands:
       - echo Building Docker image...
       - docker build -t frontend-app .
       - docker tag frontend-app:latest public.ecr.aws/i5n8n4i7/frontend-repo:latest
+
   post_build:
     commands:
       - echo Pushing Docker image to Public ECR...
