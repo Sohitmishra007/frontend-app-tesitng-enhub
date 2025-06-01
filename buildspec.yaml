@@ -1,45 +1,29 @@
 version: 0.2
 
 phases:
-  pre_build:
+  install:
+    runtime-versions:
+      python: 3.9
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws --version
-      - docker --version
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 528757813453.dkr.ecr.ap-south-1.amazonaws.com
+      - echo Installing dependencies...
+      # Add any install commands here if needed
 
   build:
     commands:
-      - echo Building Docker image...
-      - docker build -t frontend-app .
-      - docker tag frontend-app:latest 528757813453.dkr.ecr.ap-south-1.amazonaws.com/frontend-repo:latest
+      - echo Build started on `date`
+      # Add your build commands here, e.g., npm build, docker build, etc.
+      - echo Build completed on `date`
 
   post_build:
     commands:
-      - echo Pushing Docker image to ECR...
-      - docker push 528757813453.dkr.ecr.ap-south-1.amazonaws.com/frontend-repo:latest
-
-      - echo Registering new ECS task definition...
-      - |
-        aws ecs register-task-definition \
-          --region ap-south-1 \
-          --family capstone-task-definition \
-          --network-mode awsvpc \
-          --requires-compatibilities FARGATE \
-          --cpu "256" \
-          --memory "512" \
-          --execution-role-arn arn:aws:iam::528757813453:role/ecsTaskExecutionRole \
-          --container-definitions "[{\"name\":\"frontend-app\",\"image\":\"528757813453.dkr.ecr.ap-south-1.amazonaws.com/frontend-repo:latest\",\"essential\":true,\"portMappings\":[{\"containerPort\":80,\"hostPort\":80,\"protocol\":\"tcp\"}]}]"
-
-      - echo Updating ECS service...
-      - |
-        aws ecs update-service \
+      - echo Updating ECS service to force new deployment...
+      - aws ecs update-service \
           --region ap-south-1 \
           --cluster capstone-cluster \
           --service capstone-service \
           --force-new-deployment \
-          --network-configuration "awsvpcConfiguration={subnets=[subnet-06dc0fd87bfe5a8b6],securityGroups=[sg-029beaf9489126e73],assignPublicIp=ENABLED}"
+          --network-configuration "awsvpcConfiguration={subnets=[subnet-06a1ae09aaf775b8f],securityGroups=[sg-029beaf9489126e73],assignPublicIp=ENABLED}"
 
 artifacts:
   files:
-    - imagedefinitions.json
+    - '**/*'
