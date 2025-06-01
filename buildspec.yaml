@@ -6,7 +6,7 @@ phases:
       - echo Logging in to Amazon ECR Public...
       - aws --version
       - docker --version
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+      - aws ecr-public get-login-password --region ap-south-1 | docker login --username AWS --password-stdin public.ecr.aws
 
   build:
     commands:
