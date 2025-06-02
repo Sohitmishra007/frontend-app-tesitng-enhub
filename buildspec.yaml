@@ -6,7 +6,7 @@ phases:
       python: 3.9
     commands:
       - echo Installing dependencies...
-      - pip install -r requirements.txt || true  # if you have requirements.txt
+      - pip install -r requirements.txt || true  # skip if file doesn't exist
 
   pre_build:
     commands:
@@ -25,12 +25,13 @@ phases:
       - echo Pushing Docker image to ECR...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Updating ECS service...
-      - aws ecs update-service \
-          --region ap-south-1 \
-          --cluster capstone-cluster \
-          --service capstone-service \
-          --force-new-deployment \
-          --network-configuration '{"awsvpcConfiguration": {"subnets": ["subnet-06a1ae09aaf775b8f"], "securityGroups": ["sg-029beaf9489126e73"], "assignPublicIp": "ENABLED"}}'
+      - >
+        aws ecs update-service
+        --region ap-south-1
+        --cluster capstone-cluster
+        --service capstone-service
+        --force-new-deployment
+        --network-configuration '{"awsvpcConfiguration":{"subnets":["subnet-06a1ae09aaf775b8f"],"securityGroups":["sg-029beaf9489126e73"],"assignPublicIp":"ENABLED"}}'
 
 artifacts:
   files:
